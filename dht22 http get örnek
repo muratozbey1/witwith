@@ -1,0 +1,67 @@
+#include <DHT.h>
+#include <ESP8266WiFi.h>
+#include <WiFiClient.h>
+#include <ESP8266HTTPClient.h>
+
+// DHT22 sensörünün sinyal pimi
+#define DHTPIN 7
+// DHT tipi
+#define DHTTYPE DHT22
+
+// Wi-Fi ağ bilgileri
+const char* ssid = "wifiadı";
+const char* password = "şifresi";
+
+// Sunucu bilgileri
+const char* server = "www.örneksite.com";
+const String url = "/isiolcum/veri_al.php"; // Verileri göndereceğimiz PHP dosyasının adı
+
+DHT dht(DHTPIN, DHTTYPE);
+
+void setup() {
+  Serial.begin(9600);
+  delay(1000);
+  // Wi-Fi ağına bağlan
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(1000);
+    Serial.println("Bağlanılıyor...");
+  }
+  Serial.println("Bağlandı!");
+}
+
+void loop() {
+  // DHT sensöründen sıcaklık ve nem oku
+  float hum = dht.readHumidity();
+  float temp = dht.readTemperature();
+
+  // Sıcaklık ve nem verilerini seri portta göster
+  Serial.print("Nem: ");
+  Serial.print(hum);
+  Serial.print("% - ");
+  Serial.print("Sıcaklık: ");
+  Serial.print(temp);
+  Serial.println("°C");
+
+  // Verileri sunucuya gönder
+  if (WiFi.status() == WL_CONNECTED) {
+    WiFiClient client;
+    HTTPClient http;
+    // Verileri göndermek için kullanılacak URL'yi oluştur
+    char fullUrl[100];
+    sprintf(fullUrl, "http://%s%s?isi=%f&nem=%f", server, url.c_str(), temp, hum);
+
+    Serial.println(fullUrl);
+    http.begin(client, fullUrl);
+    int httpCode = http.GET();
+    if (httpCode > 0) {
+      Serial.printf("[HTTP] GET işlemi tamamlandı, kod: %d\n", httpCode);
+    } else {
+      Serial.printf("[HTTP] GET işlemi başarısız, kod: %d\n", httpCode);
+    }
+    http.end();
+  }
+
+  // Veri gönderme aralığını belirle
+  delay(5000);
+}
