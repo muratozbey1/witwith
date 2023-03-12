@@ -51,5 +51,5 @@ void loop() {
     conn.close();
   }
   
-  delay(1000); // 1 saniye bekle ve yeniden oku
+  delay(1000); // 1 saniye bekle ve yeniden oku.
 }
