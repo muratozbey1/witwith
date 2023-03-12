@@ -5,11 +5,11 @@
 #define MQ3 D8         // MQ-3 alkol sensörü analog pin A0'a bağlıdır
 #define THRESHOLD 50   // Alkol eşiği değeri
 
-char ssid[] = "didim1";    // WiFi ağının SSID'si
-char password[] = "Elaemir1906";   // WiFi ağının şifresi
+char ssid[] = "wifiadi";    // WiFi ağının SSID'si
+char password[] = "wifişifresi";   // WiFi ağının şifresi
 
 // MySQL veritabanı bilgileri
-IPAddress server_addr(213,146,138,70);  // MySQL veritabanı adresi
+IPAddress server_addr(server ip);  // MySQL veritabanı adresi
 char user[] = "alkometre";              // MySQL kullanıcı adı
 char password_db[] = "654123";          // MySQL şifresi
 char db_name[] = "Alkol";               // MySQL veritabanı adı
